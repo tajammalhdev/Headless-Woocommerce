@@ -16,7 +16,7 @@ add_action( 'rest_api_init', function () {
             'permission_callback'   => '__return_true',          
         )
     ) );
-    
+
     // Router
     register_rest_route( 'router', '/pages', array(
         array(
@@ -87,3 +87,20 @@ function main_menu_handler() {
 
     return $output;
 }
+
+
+
+add_action( 'graphql_register_types', function() {
+  register_graphql_field( 'RootQuery', 'siteLogo', [
+    'type' => 'MediaItem',
+    'description' => 'Get site custom logo',
+    'resolve' => function( $root, $args, $context ) { 
+      $logo_id = get_theme_mod( 'custom_logo' );
+      if ( empty( $logo_id ) ) {
+        return null;
+      }
+
+      return \WPGraphQL\Data\DataSource::resolve_post_object( $logo_id, $context ); 
+    }
+  ] );
+});
