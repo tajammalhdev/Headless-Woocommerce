@@ -25,3 +25,13 @@ function ditto_navigation_menus() {
 add_action( 'init', 'ditto_navigation_menus' );
 
 
+
+add_action( 'graphql_register_types', function() {
+  register_graphql_field( 'RootQuery', 'siteLogo', [
+    'type' => 'MediaItem',
+    'resolve' => function() {
+      $logo_id = get_theme_mod( 'custom_logo' );
+      return ! empty( $logo_id ) ? \WPGraphQL\Data\DataSource::resolve_post_object( $logo_id, 'MediaItem' ) : null;
+    }
+  ] );
+});
